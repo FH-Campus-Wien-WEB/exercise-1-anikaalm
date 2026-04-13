@@ -7,6 +7,50 @@
     <title>Movies!</title>
     <style>
         /* Part 3: Your styling goes here */
+        body {
+          background-color: #000000;
+          font-family:Georgia, 'Times New Roman', Times;
+          color: #fcf0f0
+          
+        }   
+
+        img {
+          border-radius: 8px;
+          max-width: 200px;
+        }
+
+        h1 {
+          font-weight: bold;
+          margin: 10px 0;
+        }
+
+        article {
+          background-color:rgba(20,30,50,0.7);
+          margin: 20px 0;
+          border-radius: 20px;
+          padding: 20px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        span {
+          margin-right: 5px;
+        }
+
+        .genre {
+          background-color: #131c5c;
+          color: white;
+          padding: 3px 10px;
+          border-radius: 12px;
+          border: 1px solid #283584;
+          display: inline-block;
+        }
+
+        .label {
+          font-weight: bold;
+        }
+
+        
+        
     </style>
     <script>
         function reverseString(s) {
@@ -18,10 +62,82 @@
             xhr.onload = function () {
                 const bodyElement = document.querySelector("body")
                 if (xhr.status == 200) {
-		            /* Part 2: Build the HTML elements here and append them to the body */ 
-                    bodyElement.append(reverseString(xhr.responseText))
-                } else {
-                    bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText)
+		            /* Part 2: Build the HTML elements here and append them to the body */
+                 const movies = JSON.parse(xhr.responseText)
+
+                 movies.forEach(function(movie) {
+                   const article = document.createElement("article")
+
+                   const title = document.createElement("h1")
+                   title.textContent = movie.Title
+                   article.appendChild(title)
+
+                   const poster = document.createElement("img")
+                   poster.src = movie.Poster
+                   poster.alt = movie.Title
+                   article.appendChild(poster)
+
+                   const plot = document.createElement("p")
+                   plot.textContent = movie.Plot
+                   article.appendChild(plot)
+
+                   const released = document.createElement("p")
+                   released.textContent = "Released: " + movie.Released
+                   article.appendChild(released)
+
+                   const runtime = document.createElement("p")
+                   runtime.textContent = "Runtime: " + movie.Runtime + " min"
+                   article.appendChild(runtime)
+
+                   const ratings = document.createElement("p")
+                   ratings.textContent = "IMDb: " + movie.imdbRating + " | Metascore: " + movie.Metascore
+                   article.appendChild(ratings)
+
+                   const genres = document.createElement("p")
+
+                   movie.Genres.forEach(function(genre) {
+                      const span = document.createElement("span")
+                      span.textContent = genre
+                      span.classList.add("genre")
+                      genres.appendChild(span)
+                   })
+
+                  article.appendChild(genres)
+
+                  const directors = document.createElement("p")
+                  const directorsLabel = document.createElement("span")
+                  directorsLabel.textContent = "Directors: "
+                  directorsLabel.classList.add("label")
+                  const directorsNames = document.createElement("span")
+                  directorsNames.textContent = movie.Directors.join(", ")
+                  directors.appendChild(directorsLabel)
+                  directors.appendChild(directorsNames)
+                  article.appendChild(directors)
+
+                  const writers = document.createElement("p")
+                  const writersLabel = document.createElement("span")
+                  writersLabel.textContent = "Writers: "
+                  writersLabel.classList.add("label")
+                  const writersNames = document.createElement("span")
+                  writersNames.textContent = movie.Writers.join(", ")
+                  writers.appendChild(writersLabel)
+                  writers.appendChild(writersNames)
+                  article.appendChild(writers)
+
+                  const actors = document.createElement("p")
+                  const actorsLabel = document.createElement("span")
+                  actorsLabel.textContent = "Actors: "
+                  actorsLabel.classList.add("label")
+                  const actorsNames = document.createElement("span")
+                  actorsNames.textContent = movie.Actors.join(", ")
+                  actors.appendChild(actorsLabel)
+                  actors.appendChild(actorsNames)
+                  article.appendChild(actors)
+
+                  bodyElement.appendChild(article)
+                })
+              } else {
+                  bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText)
                 }
             }
             xhr.open("GET", "/movies")
